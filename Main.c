@@ -20,14 +20,11 @@ void pwd(){
 }
 
 void cd(char* cd){
-    char* res;
-    
-
-    int a=chdir(cd);
-    if(a==0){
-        printf("cd: %s: No such file or directory\n",cd);
+    char res[strlen(cd)-2];
+    int a=chdir(res);
+    if(a!=0){
+        printf("cd: %s: No such file or directory\n",res);
     }
-    printf("%d\n",a);
 }
 
 
@@ -55,7 +52,17 @@ int kernel(){
             pwd();
         }
         else if(!strcmp(res,"ls")){
-            
+            int rc=fork();
+            if(rc<0){
+
+            }
+            else if(rc==0){
+                // execvp()
+            }
+            else{
+                wait();
+            }
+
         }
         else if(!strcmp(res,"cat")){
             
