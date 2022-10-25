@@ -301,6 +301,24 @@ void pwd(){
     p(getcwd(s,1024));
 }
 
+void pwd_l(){
+    char s[1024];
+    char *envvar = "PATH";
+    // p("aaaaaaaaa");
+    if(!getenv(envvar)){
+        fprintf(stderr,"The environment variable %s was not found.\n", envvar);
+        exit(1);
+    }
+    if(snprintf(s, 1024, "%s", getenv(envvar)) >= 1024){
+        fprintf(stderr,"too small array. Aborting\n");
+        exit(1);
+    }
+
+    printf("PATH: %s\n", s);
+
+
+}
+
 void cd(char* cd){
     // p(cd);
     char res[strlen(cd)-2];
@@ -341,14 +359,47 @@ int kernel(){
             echo(strr);
         }
         else if(!strcmp(res,"pwd")){
-            char* t1=strtok(NULL," ");
+            char* t1=NULL;
+            char* t2=NULL;
+            int andt=0,number=4,count=0;
+            int flag1=0,flag2=0;
+            t1=strtok(NULL," ");
+
             if(t1!=NULL){
-                if(t1[0]=='-'){
-                    p("Invalid flag usage");
-                    return 1;
+                count++;
+                t2=strtok(NULL," ");
+                if(t2!=NULL){
+                    count++;
                 }
             }
-            pwd();
+            if(count==0){
+                t1=t2="x";
+            }
+            else if(count==1){
+                t2="x";
+            }
+            if((!strcmp(t1,"-P")) || (!strcmp(t2,"-P"))){
+                flag1=1;
+                number+=3;
+            }
+            if((!strcmp(t1,"-L")) || (!strcmp(t2,"-L"))){
+                flag2=1;
+                number+=3;
+            }
+            if((number==4) && (t1[0]=='-' || t2[0]=='-')){
+                p("Wrong use of flags");
+                return 1;
+            }
+            if(flag1){
+                pwd();
+            }
+            else if(flag2){
+                pwd_l();
+            }
+            else{
+                pwd();
+
+            }
         }
         else if(!strcmp(res,"ls")){
             char* t1=NULL;
@@ -387,6 +438,11 @@ int kernel(){
                 args[3]=strdup("x");
                 number+=3;
             }
+            if((number==3) && (t1[0]=='-' || t2[0]=='-')){
+                p("Wrong use of flags");
+                return 1;
+            }
+
             if(!strcmp(t1,"&t")){
                 andt=1;
                 number+=3;
@@ -488,6 +544,11 @@ int kernel(){
                 args[4]=strdup("x");//flag2
                 number+=3;
             }
+            if((number==4) && (t1[0]=='-' || t2[0]=='-')){
+                p("Wrong use of flags");
+                return 1;
+            }
+
             if(!strcmp(t1,"&t")){
                 andt=1;
                 number+=3;
@@ -717,6 +778,10 @@ int kernel(){
                 args[3]=strdup("x");//flag2
                 number+=3;
             }
+            if((number==3) && (t1[0]=='-' || t2[0]=='-')){
+                p("Wrong use of flags");
+                return 1;
+            }
             if(!strcmp(t1,"&t")){
                 andt=1;
                 number+=3;
@@ -829,7 +894,7 @@ int kernel(){
                     p("Wrong cat usage\n");
                     return 1;                    
                 }
-                else if(strlen(strr)==number){
+                else if(strlen(strr)==number-1){
                     args[1]="none";
                 }
                 else{
@@ -844,6 +909,10 @@ int kernel(){
                 strcat(value,args[2]);
                 strcat(value," ");
                 strcat(value,args[3]);
+                // p(args[1]);
+                // p(args[2]);
+                // p(args[3]);
+
                 pthread_t p;
                 int a=pthread_create(&p,NULL,(void*)(*system),(void*)value);
                 if(a!=0){
@@ -856,15 +925,17 @@ int kernel(){
                     exit(1);
                 }
             }
-            else{                
+            else{     
+                // printf("%d %d\n",number,strlen(strr));           
                 if(strlen(strr)<number-1){
                     p("Wrong date usage\n");
                     return 1;                    
                 }
-                else if(strlen(strr)==number){
+                else if(strlen(strr)==number-1){
                     args[1]="none";
                 }
                 else{
+                    // p("not ok");
                     args[1]=strdup(strr+number);
                 }
 
@@ -873,6 +944,8 @@ int kernel(){
                 // p("aaaaa");
                 // p(args[1]);
                 // p(args[2]);
+                // p(args[3]);
+
                 args[4]=NULL;
                 int rc=fork();
                 if(rc<0){

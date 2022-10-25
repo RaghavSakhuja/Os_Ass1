@@ -13,10 +13,10 @@ int main(int argc,char* argv[]){
 	int flag2=(!strcmp(argv[4],"x")); //-n
     char* file1=argv[1];
     char* file2;
-    if(strcmp(argv[2],"nonexistent")){
+    file2=argv[2];
+    if(!strcmp(argv[2],"nonexistent")){
         file2=NULL;
     }
-    file2=argv[2];
     int i=1;
     FILE* fptr;
     FILE* fptr2=NULL;

@@ -13,7 +13,7 @@ int main(int argc, char const *argv[])
     // printf("%d %d\n",flag1,flag2);
     if(flag1){
             if(mkdir(file)==0){
-                if(flag1){
+                if(flag2){
                     printf("created : %s\n",file);
                 }
             }
@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
     }
     else{
         if(mkdir(file)==0){
-            if(flag1){
+            if(flag2){
                     printf("created : %s\n",file);
             }
         }
