@@ -610,11 +610,11 @@ int kernel(){
             else if(count==2){
                 t3="x";
             }
-            if((!strcmp(t1,"-v")) || (!strcmp(t2,"-v"))){
+            if((!strcmp(t1,"-I")) || (!strcmp(t2,"-I"))){
                 args[1]=strdup("x");//flag1
                 number+=3;
             }
-            if((!strcmp(t1,"-i")) || (!strcmp(t2,"-i"))){
+            if((!strcmp(t1,"-u")) || (!strcmp(t2,"-u"))){
                 args[2]=strdup("x");//flag2
                 number+=3;
             }
