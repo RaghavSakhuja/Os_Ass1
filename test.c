@@ -9,17 +9,19 @@
 
 
 int main(){
-    char* args[3];
+    char* args[4];
     args[0]=".";
-    args[1]="..";
-    args[2]="..";
+    args[1]="..\0";
+    args[2]="..\0";
+    args[3]=NULL;
     int rc=fork();
     if(rc<0){
         p("Fork failed");
     }
     else if(rc==0){
         p("correct");
-        execvp("./ls",args);
+        int a=execvp(strdup("./ls"),args);
+        printf("%d\n",a);
         p("shontnot");
     }
     else{

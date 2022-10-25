@@ -7,6 +7,10 @@
 #include <sys/wait.h>
 #define p(a) printf("%s\n",a)
 #define plen(a) printf("%ld\n",strlen(a));
+#define Path_ls "/mnt/c/Users/acer/Downloads/Os/A1/ls"
+#define Path_mkdir
+// #define Path_cat "/mnt/c/Users/acer/Downloads/Os/A1/cat"
+
 
 
 void echon(char* c){
@@ -312,8 +316,6 @@ void cd(char* cd){
     }
 }
 
-
-
 int kernel(){
         char* cmd={0};
         long unsigned int len=0;
@@ -342,8 +344,9 @@ int kernel(){
             char* t1=NULL;
             char* t2=NULL;
             char* t3=NULL;
-            char* args[3];
+            char* args[4];
             args[0]=args[1]=args[2]="..";
+            args[3]=NULL;
             int andt=0,number=3,count=0;
             t1=strtok(NULL," ");
             if(t1!=NULL){
@@ -370,7 +373,7 @@ int kernel(){
                 args[1]=strdup("x");
                 number+=3;
             }
-            if((!strcmp(t1,"-a")) || (!strcmp(t2,"-a"))){
+            if((!strcmp(t1,"-1")) || (!strcmp(t2,"-1"))){
                 args[2]=strdup("x");
                 number+=3;
             }
@@ -379,31 +382,122 @@ int kernel(){
                 number+=3;
             }
             else{
-                if(strlen(strr)<3){
+                if(strlen(strr)<number){
                     args[0]=strdup(".");
                 }
                 else{
-                    args[0]=strr+number;
+                    args[0]=strdup(strr+number);
                 }
                 p(args[0]);
-                p("aaaaa");
-                p(args[1]);
-                p(args[2]);
+                // p("aaaaa");
+                // p(args[1]);
+                // p(args[2]);
+                args[3]=NULL;
                 int rc=fork();
                 if(rc<0){
                     p("Fork failed");
+                    exit(1);
                 }
                 else if(rc==0){
-                    p("correct");
-                    execvp("./ls",args);
-                    p("shontnot");
+                    // p("correct");
+                    // printf("hello, I am child (pid:%d)\n", (int) getpid());
+                    execvp(Path_ls,args);
+                    p("execvp failed!!!!");
+                    exit(1);
                 }
                 else{
-                    wait(NULL);
+                    int rw=wait(NULL);
+                    // printf("hello, I am parent of %d (rc_wait:%d) (pid:%d)\n",rc,rw, (int) getpid());
                 }
             }
         }
         else if(!strcmp(res,"cat")){
+
+            char* t1=NULL;
+            char* t2=NULL;
+            char* t3=NULL;
+            char* file1=NULL;
+            char* file2=NULL;
+            
+            char* args[5];
+            args[0]=args[1]=args[2]=args[3]="..";
+            args[4]=NULL;
+            int andt=0,number=3,count=0;
+            t1=strtok(NULL," ");
+            if(t1!=NULL){
+                count++;
+                t2=strtok(NULL," ");
+                if(t2!=NULL){
+                    count++;
+                    t3=strtok(NULL," ");
+                    if(t3!=NULL){
+                        count++;
+                    }
+                }
+            }
+            if(count==0){
+                t1=t2=t3="x";
+            }
+            else if(count==1){
+                t2=t3="x";
+            }
+            else if(count==2){
+                t3="x";
+            }
+            if((!strcmp(t1,"-e")) || (!strcmp(t2,"-e"))){
+                args[2]=strdup("x");//flag1
+                number+=3;
+            }
+            if((!strcmp(t1,"-n")) || (!strcmp(t2,"-n"))){
+                args[3]=strdup("x");//flag2
+                number+=3;
+            }
+            if(!strcmp(t1,"&t")){
+                andt=1;
+                number+=3;
+            }
+            else{
+                char* c;
+                if(strlen(strr)<number){
+                    p("Wrong cat usage\n")
+                    return 1;
+                }
+                else{
+                    c=(strr+number);
+                    file1=strtok(c," ");
+                    if(file1!=NULL){
+                    file2=strtok(c," ");
+                    }
+                    else{
+                        file2="nonexistent";
+                    }
+                    args[0]=strdup(file1);
+                    args[1]=strdup(file2);
+
+                }
+                p(args[0]);
+                // p("aaaaa");
+                // p(args[1]);
+                // p(args[2]);
+                args[4]=NULL;
+                int rc=fork();
+                if(rc<0){
+                    p("Fork failed");
+                    exit(1);
+                }
+                else if(rc==0){
+                    // p("correct");
+                    // printf("hello, I am child (pid:%d)\n", (int) getpid());
+                    execvp(Path_cat,args);
+                    p("execvp failed!!!!");
+                    exit(1);
+                }
+                else{
+                    int rw=wait(NULL);
+                    // printf("hello, I am parent of %d (rc_wait:%d) (pid:%d)\n",rc,rw, (int) getpid());
+                }
+            }
+
             
         }
         else if(!strcmp(res,"mkdir")){
