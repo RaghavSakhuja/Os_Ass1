@@ -5,10 +5,11 @@
 #include <stdbool.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <pthread.h>
 #define p(a) printf("%s\n",a)
 #define plen(a) printf("%ld\n",strlen(a));
 #define Path_ls "/mnt/c/Users/acer/Downloads/Os/A1/ls"
-#define Path_mkdir 
+#define Path_mkdir "/mnt/c/Users/acer/Downloads/Os/A1/mkdir"
 #define Path_cat "/mnt/c/Users/acer/Downloads/Os/A1/cat"
 #define Path_rm "/mnt/c/Users/acer/Downloads/Os/A1/rm"
 #define Path_date "/mnt/c/Users/acer/Downloads/Os/A1/date"
@@ -346,9 +347,9 @@ int kernel(){
             char* t1=NULL;
             char* t2=NULL;
             char* t3=NULL;
-            char* args[4];
-            args[0]=args[1]=args[2]="..";
-            args[3]=NULL;
+            char* args[5];
+            args[0]=args[1]=args[2]=args[3]="..";
+            args[4]=NULL;
             int andt=0,number=3,count=0;
             t1=strtok(NULL," ");
             if(t1!=NULL){
@@ -372,29 +373,55 @@ int kernel(){
                 t3="x";
             }
             if((!strcmp(t1,"-a")) || (!strcmp(t2,"-a"))){
-                args[1]=strdup("x");
+                args[2]=strdup("x");
                 number+=3;
             }
             if((!strcmp(t1,"-1")) || (!strcmp(t2,"-1"))){
-                args[2]=strdup("x");
+                args[3]=strdup("x");
                 number+=3;
             }
             if(!strcmp(t1,"&t")){
                 andt=1;
                 number+=3;
+                if(strlen(strr)<number){
+                    args[1]=strdup(".");                    
+                }
+                else{
+                    args[1]=strdup(strr+number);
+                }
+                char value[1024]="";
+                strcat(value,Path_ls);
+                strcat(value," ");
+                strcat(value,args[1]);
+                strcat(value," ");
+                strcat(value,args[2]);
+                strcat(value," ");
+                strcat(value,args[3]);
+                pthread_t p;
+                int a=pthread_create(&p,NULL,(void*)(*system),(void*)value);
+                if(a!=0){
+                    p("Unable to create the thread");
+                    return 1;
+                }
+                int b=pthread_join(p,NULL);
+                if(b!=0){
+                    p("Unable to exit the thread");
+                    exit(1);
+                }
+
             }
             else{
                 if(strlen(strr)<number){
-                    args[0]=strdup(".");
+                    args[1]=strdup(".");
                 }
                 else{
-                    args[0]=strdup(strr+number);
+                    args[1]=strdup(strr+number);
                 }
                 // p(args[0]);
                 // p("aaaaa");
                 // p(args[1]);
                 // p(args[2]);
-                args[3]=NULL;
+                args[4]=NULL;
                 int rc=fork();
                 if(rc<0){
                     p("Fork failed");
@@ -421,9 +448,9 @@ int kernel(){
             char* file1=NULL;
             char* file2=NULL;
             
-            char* args[5];
-            args[0]=args[1]=args[2]=args[3]="..";
-            args[4]=NULL;
+            char* args[6];
+            args[0]=args[1]=args[2]=args[3]=args[4]="..";
+            args[5]=NULL;
             int andt=0,number=4,count=0;
             t1=strtok(NULL," ");
             if(t1!=NULL){
@@ -447,16 +474,54 @@ int kernel(){
                 t3="x";
             }
             if((!strcmp(t1,"-E")) || (!strcmp(t2,"-E"))){
-                args[2]=strdup("x");//flag1
+                args[3]=strdup("x");//flag1
                 number+=3;
             }
             if((!strcmp(t1,"-n")) || (!strcmp(t2,"-n"))){
-                args[3]=strdup("x");//flag2
+                args[4]=strdup("x");//flag2
                 number+=3;
             }
             if(!strcmp(t1,"&t")){
                 andt=1;
                 number+=3;
+                char* c;
+                if(strlen(strr)<number){
+                    p("Wrong cat usage\n");
+                    return 1;                    
+                }
+                else{
+                    c=(strr+number);
+                    file1=strtok(c," ");
+                    if(file1!=NULL){
+                        file2=strtok(NULL," ");
+                        if(file2==NULL){
+                            file2="nonexistent";
+                        }
+                        args[1]=strdup(file1);
+                        args[2]=strdup(file2);                    
+                    }
+                    char value[1024]="";
+                    strcat(value,Path_cat);
+                    strcat(value," ");
+                    strcat(value,args[1]);
+                    strcat(value," ");
+                    strcat(value,args[2]);
+                    strcat(value," ");
+                    strcat(value,args[3]);
+                    strcat(value," ");
+                    strcat(value,args[4]);
+                    pthread_t p;
+                    int a=pthread_create(&p,NULL,(void*)(*system),(void*)value);
+                    if(a!=0){
+                        p("Unable to create the thread");
+                        return 1;
+                    }
+                    int b=pthread_join(p,NULL);
+                    if(b!=0){
+                        p("Unable to exit the thread");
+                        exit(1);
+                    }
+                }
             }
             else{
                 char* c;
@@ -477,15 +542,15 @@ int kernel(){
                     else{
                         file2="nonexistent";
                     }
-                    args[0]=strdup(file1);
-                    args[1]=strdup(file2);
+                    args[1]=strdup(file1);
+                    args[2]=strdup(file2);
 
                 }
                 // p(args[0]);
                 // p("aaaaa");
                 // p(args[1]);
                 // p(args[2]);
-                args[4]=NULL;
+                args[5]=NULL;
                 int rc=fork();
                 if(rc<0){
                     p("Fork failed");
@@ -507,15 +572,110 @@ int kernel(){
             
         }
         else if(!strcmp(res,"mkdir")){
+            char* t1=NULL;
+            char* t2=NULL;
+            char* t3=NULL;
+            char* args[5];
+            args[0]=args[1]=args[2]=args[3]="..";
+            args[4]=NULL;
+            int andt=0,number=6,count=0;
+            t1=strtok(NULL," ");
+            if(t1!=NULL){
+                count++;
+                t2=strtok(NULL," ");
+                if(t2!=NULL){
+                    count++;
+                    t3=strtok(NULL," ");
+                    if(t3!=NULL){
+                        count++;
+                    }
+                }
+            }
+            if(count==0){
+                t1=t2=t3="x";
+            }
+            else if(count==1){
+                t2=t3="x";
+            }
+            else if(count==2){
+                t3="x";
+            }
+            if((!strcmp(t1,"-p")) || (!strcmp(t2,"-p"))){
+                args[2]=strdup("x");//flag1
+                number+=3;
+            }
+            if((!strcmp(t1,"-v")) || (!strcmp(t2,"-v"))){
+                args[3]=strdup("x");//flag2
+                number+=3;
+            }
+            if(!strcmp(t1,"&t")){
+                andt=1;
+                number+=3;
+                if(strlen(strr)<number){
+                    p("Wrong cat usage\n");
+                    return 1;                    
+                }
+                else{
+                    args[1]=strdup(strr+number);
+                }
+                char value[1024]="";
+                strcat(value,Path_mkdir);
+                strcat(value," ");
+                strcat(value,args[1]);
+                strcat(value," ");
+                strcat(value,args[2]);
+                strcat(value," ");
+                strcat(value,args[3]);
+                pthread_t p;
+                int a=pthread_create(&p,NULL,(void*)(*system),(void*)value);
+                if(a!=0){
+                    p("Unable to create the thread");
+                    return 1;
+                }
+                int b=pthread_join(p,NULL);
+                if(b!=0){
+                    p("Unable to exit the thread");
+                    exit(1);
+                }
+            }
+            else{
+                if(strlen(strr)<number){
+                    p("Wrong cat usage\n");
+                    return 1;                    
+                }
+                else{
+                    args[1]=strdup(strr+number);
+                }
+                // p("aaaaa");
+                // p(args[1]);
+                // p(args[2]);
+                args[4]=NULL;
+                int rc=fork();
+                if(rc<0){
+                    p("Fork failed");
+                    exit(1);
+                }
+                else if(rc==0){
+                    // p("correct");
+                    // printf("hello, I am child (pid:%d)\n", (int) getpid());
+                    execvp(Path_mkdir,args);
+                    p("execvp failed!!!!");
+                    exit(1);
+                }
+                else{
+                    int rw=wait(NULL);
+                    // printf("hello, I am parent of %d (rc_wait:%d) (pid:%d)\n",rc,rw, (int) getpid());
+                }
+            }
             
         }
         else if(!strcmp(res,"rm")){
             char* t1=NULL;
             char* t2=NULL;
             char* t3=NULL;
-            char* args[4];
-            args[0]=args[1]=args[2]="..";
-            args[3]=NULL;
+            char* args[5];
+            args[0]=args[1]=args[2]=args[3]="..";
+            args[4]=NULL;
             int andt=0,number=3,count=0;
             t1=strtok(NULL," ");
             if(t1!=NULL){
@@ -539,16 +699,43 @@ int kernel(){
                 t3="x";
             }
             if((!strcmp(t1,"-v")) || (!strcmp(t2,"-v"))){
-                args[1]=strdup("x");//flag1
+                args[2]=strdup("x");//flag1
                 number+=3;
             }
             if((!strcmp(t1,"-i")) || (!strcmp(t2,"-i"))){
-                args[2]=strdup("x");//flag2
+                args[3]=strdup("x");//flag2
                 number+=3;
             }
             if(!strcmp(t1,"&t")){
                 andt=1;
                 number+=3;
+                if(strlen(strr)<number){
+                    p("Wrong cat usage\n");
+                    return 1;                    
+                }
+                else{
+                    args[1]=strdup(strr+number);
+                }
+                char value[1024]="";
+                strcat(value,Path_rm);
+                strcat(value," ");
+                strcat(value,args[1]);
+                strcat(value," ");
+                strcat(value,args[2]);
+                strcat(value," ");
+                strcat(value,args[3]);
+                pthread_t p;
+                int a=pthread_create(&p,NULL,(void*)(*system),(void*)value);
+                if(a!=0){
+                    p("Unable to create the thread");
+                    return 1;
+                }
+                int b=pthread_join(p,NULL);
+                if(b!=0){
+                    p("Unable to exit the thread");
+                    exit(1);
+                }
+
             }
             else{
                 if(strlen(strr)<number){
@@ -556,13 +743,13 @@ int kernel(){
                     return 1;                    
                 }
                 else{
-                    args[0]=strdup(strr+number);
+                    args[1]=strdup(strr+number);
                 }
                 // p(args[0]);
                 // p("aaaaa");
                 // p(args[1]);
                 // p(args[2]);
-                args[3]=NULL;
+                args[4]=NULL;
                 int rc=fork();
                 if(rc<0){
                     p("Fork failed");
@@ -586,9 +773,9 @@ int kernel(){
             char* t1=NULL;
             char* t2=NULL;
             char* t3=NULL;
-            char* args[4];
-            args[0]=args[1]=args[2]="..";
-            args[3]=NULL;
+            char* args[5];
+            args[0]=args[1]=args[2]=args[3]="..";
+            args[4]=NULL;
             int andt=0,number=3,count=0;
             t1=strtok(NULL," ");
             if(t1!=NULL){
@@ -612,16 +799,35 @@ int kernel(){
                 t3="x";
             }
             if((!strcmp(t1,"-I")) || (!strcmp(t2,"-I"))){
-                args[1]=strdup("x");//flag1
+                args[2]=strdup("x");//flag1
                 number+=3;
             }
             if((!strcmp(t1,"-u")) || (!strcmp(t2,"-u"))){
-                args[2]=strdup("x");//flag2
+                args[3]=strdup("x");//flag2
                 number+=3;
             }
             if(!strcmp(t1,"&t")){
                 andt=1;
                 number+=3;
+                char value[1024]="";
+                strcat(value,Path_date);
+                strcat(value," ");
+                strcat(value,args[1]);
+                strcat(value," ");
+                strcat(value,args[2]);
+                strcat(value," ");
+                strcat(value,args[3]);
+                pthread_t p;
+                int a=pthread_create(&p,NULL,(void*)(*system),(void*)value);
+                if(a!=0){
+                    p("Unable to create the thread");
+                    return 1;
+                }
+                int b=pthread_join(p,NULL);
+                if(b!=0){
+                    p("Unable to exit the thread");
+                    exit(1);
+                }
             }
             else{
                 // p(args[0]);

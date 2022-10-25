@@ -9,8 +9,8 @@
 
 int main(int argc, char const *argv[])
 {
-    int flag1=(!strcmp(argv[1],"x")); //-I
-	int flag2=(!strcmp(argv[2],"x")); //-u` 
+    int flag1=(!strcmp(argv[2],"x")); //-I
+	int flag2=(!strcmp(argv[3],"x")); //-u` 
     
     time_t t=time(NULL);
     struct tm curtime=*localtime(&t);

@@ -7,10 +7,10 @@
 
 int main(int argc, char const *argv[])
 {
-	int flag1=(!strcmp(argv[1],"x")); //-v
-	int flag2=(!strcmp(argv[2],"x")); //-i
+	int flag1=(!strcmp(argv[2],"x")); //-v
+	int flag2=(!strcmp(argv[3],"x")); //-i
     // printf("%d %d\n",flag1,flag2);
-    char* file=argv[0];
+    char* file=argv[1];
     if(flag2){
         printf("rm: remove regular file '%s'? ",file);
         char term[10];

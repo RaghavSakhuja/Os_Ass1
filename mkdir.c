@@ -7,9 +7,31 @@
 
 int main(int argc, char const *argv[])
 {
-	int flag1=(!strcmp(argv[1],"x")); //-v
-	int flag2=(!strcmp(argv[2],"x")); //-i
+	int flag1=(!strcmp(argv[2],"x")); //-p
+	int flag2=(!strcmp(argv[3],"x")); //-v
+    char* file=argv[1];
     // printf("%d %d\n",flag1,flag2);
+    if(flag1){
+            if(mkdir(file)==0){
+                if(flag1){
+                    printf("created : %s\n",file);
+                }
+            }
+            else{
+                    printf("Could not create the file : %s\n",file);
+            }
+    }
+    else{
+        if(mkdir(file)==0){
+            if(flag1){
+                    printf("created : %s\n",file);
+            }
+        }
+        else{
+            printf("Could not create the file : %s\n",file);
+        }
+    }
+
     return 0;
 
 }

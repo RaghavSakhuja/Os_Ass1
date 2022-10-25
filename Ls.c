@@ -10,9 +10,9 @@
 int main(int argc,char* argv[]){
 	// p("aaaaaaaaaaa");
 	struct dirent* d;
-	DIR *dh =opendir(argv[0]);
-	int flag1=(!strcmp(argv[1],"x")); //-a
-	int flag2=(!strcmp(argv[2],"x")); //-1
+	DIR *dh =opendir(argv[1]);
+	int flag1=(!strcmp(argv[2],"x")); //-a
+	int flag2=(!strcmp(argv[3],"x")); //-1
 	// printf("%d %d\n",flag1,flag2);
 	if(!dh){
 	

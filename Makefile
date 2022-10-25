@@ -9,4 +9,4 @@ cr:
 	./main
 
 clean:
-	rm -f ls main cat date rm
+	rm -f ls main cat date rm mkdir
