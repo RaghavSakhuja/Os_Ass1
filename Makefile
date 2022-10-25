@@ -1,5 +1,9 @@
 all: cr clean
 cr:
+
+	gcc -o getdir getdir.c
+	./getdir
+
 	gcc -w -o ls ls.c
 	gcc -w -o rm rm.c
 	gcc -w -o cat cat.c
@@ -9,4 +13,4 @@ cr:
 	./main
 
 clean:
-	rm -f ls main cat date rm mkdir
+	rm -f ls main cat date rm mkdir getdir paths.txt

@@ -8,13 +8,8 @@
 #include <pthread.h>
 #define p(a) printf("%s\n",a)
 #define plen(a) printf("%ld\n",strlen(a));
-#define Path_ls "/mnt/c/Users/acer/Downloads/Os/A1/ls"
-#define Path_mkdir "/mnt/c/Users/acer/Downloads/Os/A1/mkdir"
-#define Path_cat "/mnt/c/Users/acer/Downloads/Os/A1/cat"
-#define Path_rm "/mnt/c/Users/acer/Downloads/Os/A1/rm"
-#define Path_date "/mnt/c/Users/acer/Downloads/Os/A1/date"
 
-
+char Path_ls[1024],Path_mkdir[1024],Path_date[1024],Path_cat[1024],Path_rm[1024];
 
 void echon(char* c){
     bool flag=false;
@@ -834,7 +829,7 @@ int kernel(){
                 // p("aaaaa");
                 // p(args[1]);
                 // p(args[2]);
-                args[3]=NULL;
+                args[4]=NULL;
                 int rc=fork();
                 if(rc<0){
                     p("Fork failed");
@@ -861,6 +856,22 @@ int kernel(){
 }
 int main(){
     int a=1;
+    FILE* ptr;
+    ptr=fopen("paths.txt","r");
+    if(ptr==NULL){
+        printf("DO NOT RUN!!! ERROR");
+        return 1;
+    }
+    fscanf(ptr,"%s",Path_ls);
+    fscanf(ptr,"%s",Path_mkdir);
+    fscanf(ptr,"%s",Path_cat);
+    fscanf(ptr,"%s",Path_date);
+    fscanf(ptr,"%s",Path_rm);
+    // p(Path_ls);
+    // p(Path_date);
+    // p(Path_mkdir);
+    // p(Path_rm);
+    // p(Path_cat);
     while(a){
     a=kernel();
     }
