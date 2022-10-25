@@ -11,6 +11,7 @@
 #define Path_mkdir 
 #define Path_cat "/mnt/c/Users/acer/Downloads/Os/A1/cat"
 #define Path_rm "/mnt/c/Users/acer/Downloads/Os/A1/rm"
+#define Path_date "/mnt/c/Users/acer/Downloads/Os/A1/date"
 
 
 
@@ -623,13 +624,6 @@ int kernel(){
                 number+=3;
             }
             else{
-                if(strlen(strr)<number){
-                    p("Wrong cat usage\n");
-                    return 1;                    
-                }
-                else{
-                    args[0]=strdup(strr+number);
-                }
                 // p(args[0]);
                 // p("aaaaa");
                 // p(args[1]);
@@ -643,7 +637,7 @@ int kernel(){
                 else if(rc==0){
                     // p("correct");
                     // printf("hello, I am child (pid:%d)\n", (int) getpid());
-                    execvp(Path_rm,args);
+                    execvp(Path_date,args);
                     p("execvp failed!!!!");
                     exit(1);
                 }
