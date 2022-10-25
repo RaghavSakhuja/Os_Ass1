@@ -3,13 +3,13 @@
 #include <string.h>
 #include <stdbool.h>
 #include <sys/types.h>
-#include <time.h>
 #define p(a) printf("%s\n",a)
-#define plen(a) printf("%ld\n",strlen(a));
 
 int main(int argc, char const *argv[])
 {
-    time_t t=time(NULL);
-    
+	int flag1=(!strcmp(argv[1],"x")); //-v
+	int flag2=(!strcmp(argv[2],"x")); //-i
+    // printf("%d %d\n",flag1,flag2);
     return 0;
+
 }

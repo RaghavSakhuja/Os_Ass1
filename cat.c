@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <stdbool.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #define p(a) printf("%s\n",a)
 #define plen(a) printf("%ld\n",strlen(a));
 
@@ -21,16 +19,18 @@ int main(int argc,char* argv[]){
     file2=argv[1];
     int i=1;
     FILE* fptr;
-    FILE* fptr2;
+    FILE* fptr2=NULL;
     fptr=fopen(file1,"r");
     if(fptr==NULL){
         printf("cat: %s: No such file or directory\n",file1);
         return 0;
     }
-    fptr2=fopen(file2,"r");
-    if(fptr2==NULL){
-        printf("cat: %s: No such file or directory\n",file2);
-        return 0;
+    if(file2!=NULL){
+        fptr2=fopen(file2,"r");
+        if(fptr2==NULL){
+            printf("cat: %s: No such file or directory\n",file2);
+            return 0;
+        }
     }
 
     char input[1024];
@@ -50,23 +50,24 @@ int main(int argc,char* argv[]){
     if(flag1){
         printf("$");
     }
-    char input2[1024];
-    while(fgets(input2,sizeof(input2),fptr2)){
-        int len=strlen(input2);
-        if(flag2){
-            printf("%d\t%s",i,input2);            
+    if(fptr2){
+        char input2[1024];
+        while(fgets(input2,sizeof(input2),fptr2)){
+            int len=strlen(input2);
+            if(flag2){
+                printf("%d\t%s",i,input2);            
+            }
+            else{
+                printf("%s",input2);
+            }
+            if(input2[len-1]=='\n'){
+                i++;
+            }
         }
-        else{
-            printf("%s",input2);
-        }
-        if(input2[len-1]=='\n'){
-            i++;
+        if(flag1){
+            printf("$");
         }
     }
-    if(flag1){
-        printf("$");
-    }
-
 
 
 	// printf("%d %d\n",flag1,flag2);

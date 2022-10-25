@@ -8,8 +8,9 @@
 #define p(a) printf("%s\n",a)
 #define plen(a) printf("%ld\n",strlen(a));
 #define Path_ls "/mnt/c/Users/acer/Downloads/Os/A1/ls"
-#define Path_mkdir
+#define Path_mkdir 
 #define Path_cat "/mnt/c/Users/acer/Downloads/Os/A1/cat"
+#define Path_rm "/mnt/c/Users/acer/Downloads/Os/A1/rm"
 
 
 
@@ -388,7 +389,7 @@ int kernel(){
                 else{
                     args[0]=strdup(strr+number);
                 }
-                p(args[0]);
+                // p(args[0]);
                 // p("aaaaa");
                 // p(args[1]);
                 // p(args[2]);
@@ -422,7 +423,7 @@ int kernel(){
             char* args[5];
             args[0]=args[1]=args[2]=args[3]="..";
             args[4]=NULL;
-            int andt=0,number=3,count=0;
+            int andt=0,number=4,count=0;
             t1=strtok(NULL," ");
             if(t1!=NULL){
                 count++;
@@ -463,10 +464,14 @@ int kernel(){
                     return 1;
                 }
                 else{
+                    
                     c=(strr+number);
                     file1=strtok(c," ");
                     if(file1!=NULL){
                         file2=strtok(NULL," ");
+                        if(file2==NULL){
+                            file2="nonexistent";
+                        }
                     }
                     else{
                         file2="nonexistent";
@@ -504,9 +509,149 @@ int kernel(){
             
         }
         else if(!strcmp(res,"rm")){
-            
+            char* t1=NULL;
+            char* t2=NULL;
+            char* t3=NULL;
+            char* args[4];
+            args[0]=args[1]=args[2]="..";
+            args[3]=NULL;
+            int andt=0,number=3,count=0;
+            t1=strtok(NULL," ");
+            if(t1!=NULL){
+                count++;
+                t2=strtok(NULL," ");
+                if(t2!=NULL){
+                    count++;
+                    t3=strtok(NULL," ");
+                    if(t3!=NULL){
+                        count++;
+                    }
+                }
+            }
+            if(count==0){
+                t1=t2=t3="x";
+            }
+            else if(count==1){
+                t2=t3="x";
+            }
+            else if(count==2){
+                t3="x";
+            }
+            if((!strcmp(t1,"-v")) || (!strcmp(t2,"-v"))){
+                args[1]=strdup("x");//flag1
+                number+=3;
+            }
+            if((!strcmp(t1,"-i")) || (!strcmp(t2,"-i"))){
+                args[2]=strdup("x");//flag2
+                number+=3;
+            }
+            if(!strcmp(t1,"&t")){
+                andt=1;
+                number+=3;
+            }
+            else{
+                if(strlen(strr)<number){
+                    p("Wrong cat usage\n");
+                    return 1;                    
+                }
+                else{
+                    args[0]=strdup(strr+number);
+                }
+                // p(args[0]);
+                // p("aaaaa");
+                // p(args[1]);
+                // p(args[2]);
+                args[3]=NULL;
+                int rc=fork();
+                if(rc<0){
+                    p("Fork failed");
+                    exit(1);
+                }
+                else if(rc==0){
+                    // p("correct");
+                    // printf("hello, I am child (pid:%d)\n", (int) getpid());
+                    execvp(Path_rm,args);
+                    p("execvp failed!!!!");
+                    exit(1);
+                }
+                else{
+                    int rw=wait(NULL);
+                    // printf("hello, I am parent of %d (rc_wait:%d) (pid:%d)\n",rc,rw, (int) getpid());
+                }
+            }
+
         }
-        else if(!strcmp(res,"cat")){
+        else if(!strcmp(res,"date")){
+            char* t1=NULL;
+            char* t2=NULL;
+            char* t3=NULL;
+            char* args[4];
+            args[0]=args[1]=args[2]="..";
+            args[3]=NULL;
+            int andt=0,number=3,count=0;
+            t1=strtok(NULL," ");
+            if(t1!=NULL){
+                count++;
+                t2=strtok(NULL," ");
+                if(t2!=NULL){
+                    count++;
+                    t3=strtok(NULL," ");
+                    if(t3!=NULL){
+                        count++;
+                    }
+                }
+            }
+            if(count==0){
+                t1=t2=t3="x";
+            }
+            else if(count==1){
+                t2=t3="x";
+            }
+            else if(count==2){
+                t3="x";
+            }
+            if((!strcmp(t1,"-v")) || (!strcmp(t2,"-v"))){
+                args[1]=strdup("x");//flag1
+                number+=3;
+            }
+            if((!strcmp(t1,"-i")) || (!strcmp(t2,"-i"))){
+                args[2]=strdup("x");//flag2
+                number+=3;
+            }
+            if(!strcmp(t1,"&t")){
+                andt=1;
+                number+=3;
+            }
+            else{
+                if(strlen(strr)<number){
+                    p("Wrong cat usage\n");
+                    return 1;                    
+                }
+                else{
+                    args[0]=strdup(strr+number);
+                }
+                // p(args[0]);
+                // p("aaaaa");
+                // p(args[1]);
+                // p(args[2]);
+                args[3]=NULL;
+                int rc=fork();
+                if(rc<0){
+                    p("Fork failed");
+                    exit(1);
+                }
+                else if(rc==0){
+                    // p("correct");
+                    // printf("hello, I am child (pid:%d)\n", (int) getpid());
+                    execvp(Path_rm,args);
+                    p("execvp failed!!!!");
+                    exit(1);
+                }
+                else{
+                    int rw=wait(NULL);
+                    // printf("hello, I am parent of %d (rc_wait:%d) (pid:%d)\n",rc,rw, (int) getpid());
+                }
+            }
             
         }
         else if(!strcmp(res,"exit")){
