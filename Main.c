@@ -305,12 +305,17 @@ void cd(char* cd){
     // p(cd);
     char res[strlen(cd)-2];
     strcpy(res,cd+3);
+    if(res[0]=='-'){
+        p("Invalid flag usage");
+        return;
+    }
     // plen(res);
     // p(res);
     int a=chdir(res);
     // printf("%d\n",a);
     if(a!=0){
         printf("cd: %s: No such file or directory\n",res);
+        return;
     }
 }
 
@@ -336,6 +341,13 @@ int kernel(){
             echo(strr);
         }
         else if(!strcmp(res,"pwd")){
+            char* t1=strtok(NULL," ");
+            if(t1!=NULL){
+                if(t1[0]=='-'){
+                    p("Invalid flag usage");
+                    return 1;
+                }
+            }
             pwd();
         }
         else if(!strcmp(res,"ls")){
@@ -603,11 +615,15 @@ int kernel(){
                 args[3]=strdup("x");//flag2
                 number+=3;
             }
+            if((number==6) && (t1[0]=='-' || t2[0]=='-')){
+                p("Wrong use of flags");
+                return 1;
+            }
             if(!strcmp(t1,"&t")){
                 andt=1;
                 number+=3;
                 if(strlen(strr)<number){
-                    p("Wrong cat usage\n");
+                    p("Wrong mkdir usage\n");
                     return 1;                    
                 }
                 else{
@@ -635,7 +651,7 @@ int kernel(){
             }
             else{
                 if(strlen(strr)<number){
-                    p("Wrong cat usage\n");
+                    p("Wrong mkdir usage\n");
                     return 1;                    
                 }
                 else{
@@ -705,7 +721,7 @@ int kernel(){
                 andt=1;
                 number+=3;
                 if(strlen(strr)<number){
-                    p("Wrong cat usage\n");
+                    p("Wrong rm usage\n");
                     return 1;                    
                 }
                 else{
@@ -734,7 +750,7 @@ int kernel(){
             }
             else{
                 if(strlen(strr)<number){
-                    p("Wrong cat usage\n");
+                    p("Wrong rm usage\n");
                     return 1;                    
                 }
                 else{
@@ -771,7 +787,7 @@ int kernel(){
             char* args[5];
             args[0]=args[1]=args[2]=args[3]="..";
             args[4]=NULL;
-            int andt=0,number=3,count=0;
+            int andt=0,number=5,count=0;
             t1=strtok(NULL," ");
             if(t1!=NULL){
                 count++;
@@ -801,9 +817,25 @@ int kernel(){
                 args[3]=strdup("x");//flag2
                 number+=3;
             }
+            if((number==4) && (t1[0]=='-' || t2[0]=='-')){
+                p("Wrong use of flags");
+                return 1;
+            }
+
             if(!strcmp(t1,"&t")){
                 andt=1;
                 number+=3;
+                if(strlen(strr)<number-1){
+                    p("Wrong cat usage\n");
+                    return 1;                    
+                }
+                else if(strlen(strr)==number){
+                    args[1]="none";
+                }
+                else{
+                    args[1]=strdup(strr+number);
+                }
+
                 char value[1024]="";
                 strcat(value,Path_date);
                 strcat(value," ");
@@ -824,7 +856,19 @@ int kernel(){
                     exit(1);
                 }
             }
-            else{
+            else{                
+                if(strlen(strr)<number-1){
+                    p("Wrong date usage\n");
+                    return 1;                    
+                }
+                else if(strlen(strr)==number){
+                    args[1]="none";
+                }
+                else{
+                    args[1]=strdup(strr+number);
+                }
+
+
                 // p(args[0]);
                 // p("aaaaa");
                 // p(args[1]);
