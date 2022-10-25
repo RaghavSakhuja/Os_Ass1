@@ -9,7 +9,7 @@
 #define plen(a) printf("%ld\n",strlen(a));
 #define Path_ls "/mnt/c/Users/acer/Downloads/Os/A1/ls"
 #define Path_mkdir
-// #define Path_cat "/mnt/c/Users/acer/Downloads/Os/A1/cat"
+#define Path_cat "/mnt/c/Users/acer/Downloads/Os/A1/cat"
 
 
 
@@ -444,7 +444,7 @@ int kernel(){
             else if(count==2){
                 t3="x";
             }
-            if((!strcmp(t1,"-e")) || (!strcmp(t2,"-e"))){
+            if((!strcmp(t1,"-E")) || (!strcmp(t2,"-E"))){
                 args[2]=strdup("x");//flag1
                 number+=3;
             }
@@ -459,14 +459,14 @@ int kernel(){
             else{
                 char* c;
                 if(strlen(strr)<number){
-                    p("Wrong cat usage\n")
+                    p("Wrong cat usage\n");
                     return 1;
                 }
                 else{
                     c=(strr+number);
                     file1=strtok(c," ");
                     if(file1!=NULL){
-                    file2=strtok(c," ");
+                        file2=strtok(NULL," ");
                     }
                     else{
                         file2="nonexistent";
@@ -475,7 +475,7 @@ int kernel(){
                     args[1]=strdup(file2);
 
                 }
-                p(args[0]);
+                // p(args[0]);
                 // p("aaaaa");
                 // p(args[1]);
                 // p(args[2]);
