@@ -199,20 +199,3 @@ directories.Can remove empty directories.
 creating a directory.
 2. In case of an invalid file name or directory, do not delete any
 file and print the error.
-
-## Possible test cases
-echo -n “Hello
-World”
-Pwd -P
-cd ..
-ls -a
-mkdir -p a
-rm -v -i a
-cat -n a.txt (a.txt must be created beforehand)
-date -u
-Pwd -L
-ls &t -1
-mkdir &t -v a
-rm &t -i -i a
-cat &t -E a.txt b.txt (a.txt, b.txt must be created beforehand)
-date &t -
